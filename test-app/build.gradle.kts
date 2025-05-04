@@ -27,7 +27,7 @@ android {
     targetProjectPath = ":app"
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
 
         testInstrumentationRunner = "android.template.core.testing.HiltTestRunner"
@@ -35,7 +35,7 @@ android {
 
     buildFeatures {
         aidl = false
-        buildConfig = false
+        buildConfig = true
         renderScript = false
         shaders = false
     }
