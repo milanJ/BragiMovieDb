@@ -3,6 +3,7 @@ package android.template.core.data
 import android.template.core.data.remote.GetMoviesResponse
 import android.template.core.data.remote.MoviesRemoteDataSource
 import android.template.core.data.remote.paging.MoviesPagingSource
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -10,6 +11,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Concrete implementation of [MoviesRepository].
+ */
 class DefaultMoviesRepository @Inject constructor(
     private val remoteDataSource: MoviesRemoteDataSource,
     private val coroutineDispatcher: CoroutineDispatcher,
@@ -22,6 +26,7 @@ class DefaultMoviesRepository @Inject constructor(
         override suspend fun loadPage(
             page: Int
         ): List<MovieModel> = withContext(coroutineDispatcher) {
+            Log.d(TAG, "getMoviesPagingSource() :: loadPage() :: page = $page, genre = $genre")
             val movies = remoteDataSource.getMovies(page, genre.name).results
             return@withContext mergeMovieDetails(movies)
         }
@@ -56,3 +61,5 @@ private fun GetMoviesResponse.Movie.toMovieModel(
     revenue = budget,
     budget = revenue
 )
+
+private const val TAG = "DefaultMoviesRepository"

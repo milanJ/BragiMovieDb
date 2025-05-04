@@ -8,6 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Concrete implementation of [GenresRepository].
+ */
 class DefaultGenresRepository @Inject constructor(
     private val remoteDataSource: GenresRemoteDataSource,
     private val coroutineDispatcher: CoroutineDispatcher,
