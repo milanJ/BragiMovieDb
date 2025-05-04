@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import android.template.core.data.MyModelRepository
+import android.template.core.data.MoviesRepository
 import android.template.feature.mymodel.ui.MyModelUiState
 import android.template.feature.mymodel.ui.MyModelViewModel
 
@@ -37,18 +37,18 @@ import android.template.feature.mymodel.ui.MyModelViewModel
 class MyModelViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
-        val viewModel = MyModelViewModel(FakeMyModelRepository())
+        val viewModel = MyModelViewModel(FakeMoviesRepository())
         assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
     }
 
     @Test
     fun uiState_onItemSaved_isDisplayed() = runTest {
-        val viewModel = MyModelViewModel(FakeMyModelRepository())
+        val viewModel = MyModelViewModel(FakeMoviesRepository())
         assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
     }
 }
 
-private class FakeMyModelRepository : MyModelRepository {
+private class FakeMoviesRepository : MoviesRepository {
 
     private val data = mutableListOf<String>()
 

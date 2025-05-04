@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import android.template.core.data.MyModelRepository
+import android.template.core.data.MoviesRepository
 import android.template.feature.mymodel.ui.MyModelUiState.Error
 import android.template.feature.mymodel.ui.MyModelUiState.Loading
 import android.template.feature.mymodel.ui.MyModelUiState.Success
@@ -33,17 +33,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyModelViewModel @Inject constructor(
-    private val myModelRepository: MyModelRepository
+    private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<MyModelUiState> = myModelRepository
+    val uiState: StateFlow<MyModelUiState> = moviesRepository
         .myModels.map<List<String>, MyModelUiState> { Success(data = it) }
         .catch { emit(Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
 
     fun addMyModel(name: String) {
         viewModelScope.launch {
-            myModelRepository.add(name)
+            moviesRepository.add(name)
         }
     }
 }
