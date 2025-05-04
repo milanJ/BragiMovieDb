@@ -28,6 +28,7 @@ import android.template.core.data.remote.DefaultGenresRemoteDataSource
 import android.template.core.data.remote.DefaultMoviesRemoteDataSource
 import android.template.core.data.remote.GenresRemoteDataSource
 import android.template.core.data.remote.MoviesRemoteDataSource
+import android.template.core.data.remote.RetryInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Binds
@@ -87,10 +88,11 @@ object DataModule {
         return OkHttpClient.Builder()
             .cache(okHttpClientCache)
             .addInterceptor(AuthorizationInterceptor(BuildConfig.TMDB_API_KEY))
+            .addInterceptor(RetryInterceptor())
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.MILLISECONDS)
-            .readTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.MILLISECONDS)
-            .writeTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.MILLISECONDS)
+            .connectTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(CONNECT_READ_WRITE_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 
@@ -123,4 +125,4 @@ abstract class DataModuleBinds {
 }
 
 private const val OK_HTTP_CLIENT_CACHE_SIZE = 20L * 1024L * 1024L // 20 MB
-private const val CONNECT_READ_WRITE_TIMEOUT = 60000L
+private const val CONNECT_READ_WRITE_TIMEOUT = 30L // 30 seconds
