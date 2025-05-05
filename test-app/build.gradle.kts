@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-testing"))
     implementation(project(":feature-movies"))
+    implementation(project(":feature-filters"))
 
     // Testing
     implementation(libs.androidx.test.core)

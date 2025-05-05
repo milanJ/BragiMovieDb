@@ -33,16 +33,13 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        // Enable room auto-migrations
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+        setProperty("archivesBaseName", "${applicationId}-${versionName}(${versionCode})")
     }
 
     buildTypes {

@@ -22,7 +22,7 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import android.template.core.data.MoviesRepository
 import android.template.core.data.di.DataModule
-import android.template.core.data.di.FakeMoviesRepository
+import android.template.core.data.FakeMoviesRepository
 
 @Module
 @TestInstallIn(
