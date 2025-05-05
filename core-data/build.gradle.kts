@@ -26,15 +26,18 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
 
         testInstrumentationRunner = "android.template.core.testing.HiltTestRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "TMDB_API_KEY", "\"${property("TMDB-API-KEY")}\"")
+        buildConfigField("String", "TMDB_BASE_URL", "\"${property("TMDB-BASE-URL")}\"")
     }
 
     buildFeatures {
         aidl = false
-        buildConfig = false
+        buildConfig = true
         renderScript = false
         shaders = false
     }
@@ -50,15 +53,25 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-database"))
-
     // Arch Components
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
     implementation(libs.kotlinx.coroutines.android)
 
+    // Network:
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
     // Local tests: jUnit, coroutines, Android runner
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 }
+
+

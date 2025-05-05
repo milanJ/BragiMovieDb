@@ -1,41 +1,42 @@
-Architecture starter template (multi-module)
+Bragi Movie Db
 ==================
 
-This template is compatible with the latest **stable** version of Android Studio.
+An app that shows a list of movies filtered by genre
 
-![Screenshot](https://github.com/android/architecture-templates/raw/main/screenshots.png)
-
-## Features
-
-* Room Database
-* Hilt
-* ViewModel, read+write
-* UI in Compose, list + write (Material3)
-* Navigation
-* Repository and data source
-* Kotlin Coroutines and Flow
-* Unit tests
-* UI tests using fake data with Hilt
-
-## Usage
+## How to build the app
 
 1. Clone this branch
+    ```
+    git clone git@github.com:milanJ/BragiMovieDb.git --branch main
+    ```
+2. Open the cloned repository in Android Studio.
+3. In terminal run `./gradlew assemble` task.
+4. After the task finishes running, release and debug APK files will be located in the `/app/build/outputs/apk` directory.
 
-```
-git clone https://github.com/android/architecture-templates.git --branch multimodule
-```
+## General architecture
 
+The app is based on MVVM architecture. It was built using Hilt, Coroutines, Material Design and Jetpack Compose.
+It is separated into 7 modules: `app`, `core-data`, `core-testing`, `core-ui`, `feature-filters`, `feature-movies` and `test-app`.
 
-2. Run the customizer script:
+ - `app` is the main application module and it contains its `MainActivity` and `MyApplication` classes. And sets-up navigation.
+ - `core-data` module contains the data layer of the app.
+ - `core-testing` module contains the common classes used for testing in other modules.
+ - `core-ui` module contains the common UI code.
+ - `feature-filters` module contains the Filters screen.
+ - `feature-movies` module contains the Movies screen.
+ - `test-app` module is supposed to contain integration and e2e tests.
 
-```
-./customizer.sh your.package.name DataItemType [MyApplication]
-```
+## Breakdown of libraries used
 
-Where `your.package.name` is your app ID (should be lowercase) and `DataItemType` is used for the
-name of the screen, exposed state and data base entity (should be PascalCase). You can add an optional application name.
-
-# License
-
-Now in Android is distributed under the terms of the Apache License (Version 2.0). See the
-[license](LICENSE) for more information.
+The application is using the following libraries:
+ - **Kotlin Coroutines** for asynchronous programming.
+ - **Jetpack Compose** to build UI.
+ - **Material Design 3** to style the UI.
+ - **Hilt** for dependency injection.
+ - **Navigation Compose** to handle the navigation between the parts of UI.
+ - **AndroidX Paging 3** and **Paging Compose** to handle the loading of paged data.
+ - **AndroidX Lifecycle** to react to changes in the lifecycle status of components.
+ - **Coil** to load images.
+ - **Gson** to parse JSON data.
+ - **OkHttp** and **Retrofit** to handle network communication.
+ - **AndroidX Test**  for testing.
