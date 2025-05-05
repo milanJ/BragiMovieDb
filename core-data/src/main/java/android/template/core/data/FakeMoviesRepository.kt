@@ -9,7 +9,7 @@ import javax.inject.Inject
 class FakeMoviesRepository @Inject constructor() : MoviesRepository {
 
     override fun getMoviesPagingSource(
-        genre: GenreModel
+        genreName: String?
     ): MoviesPagingSource {
         TODO("Not yet implemented")
     }

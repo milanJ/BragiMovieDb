@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
  * A [PagingSource] that loads movies from a remote data source.
  */
 class MoviesPagingSource(
-    private val genreName: String,
+    private val genreName: String?,
     private val remoteDataSource: MoviesRemoteDataSource,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : PagingSource<Int, MovieModel>() {
@@ -60,8 +60,10 @@ class MoviesPagingSource(
     private suspend fun mergeMovieDetails(
         movies: List<GetMoviesResponse.Movie>
     ): List<MovieModel> = coroutineScope {
+        Log.d(TAG, "mergeMovieDetails() :: For ${movies.size} movies")
         val movieModels = movies.map { item ->
             async {
+                Log.d(TAG, "mergeMovieDetails() :: Get details for '${item.title}'")
                 val details = remoteDataSource.getMovieDetails(item.id)
                 item.toMovieModel(details.budget, details.revenue)
             }

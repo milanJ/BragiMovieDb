@@ -1,3 +1,12 @@
 <resources>
-    <string name="movies_screen_filter_button_caption">Filter by genre</string>
+    <string name="movies_screen_title">Bragi Movies</string>
+
+    <string name="movies_screen_button_caption_filter">Filter by genre</string>
+    <string name="movies_screen_button_caption_retry">Retry</string>
+
+    <string name="movies_screen_text_rating">Rating: %1$f</string>
+    <string name="movies_screen_text_revenue">Revenue: %1$s</string>
+    <string name="movies_screen_text_budget">Budget: %1$s</string>
+
+    <string name="movies_screen_error_message_connection">Connection error. Please fix your connection and try again.</string>
 </resources>

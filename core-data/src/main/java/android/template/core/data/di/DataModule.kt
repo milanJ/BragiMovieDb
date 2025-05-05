@@ -86,7 +86,7 @@ object DataModule {
                 level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
             }
         return OkHttpClient.Builder()
-            .cache(okHttpClientCache)
+            //.cache(okHttpClientCache)
             .addInterceptor(AuthorizationInterceptor(BuildConfig.TMDB_API_KEY))
             .addInterceptor(RetryInterceptor())
             .addInterceptor(loggingInterceptor)

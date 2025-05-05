@@ -14,6 +14,6 @@ class DefaultMoviesRepository @Inject constructor(
 ) : MoviesRepository {
 
     override fun getMoviesPagingSource(
-        genre: GenreModel,
-    ): MoviesPagingSource = MoviesPagingSource(genre.name, remoteDataSource, coroutineDispatcher)
+        genreName: String?,
+    ): MoviesPagingSource = MoviesPagingSource(genreName, remoteDataSource, coroutineDispatcher)
 }

@@ -1,7 +1,6 @@
 package android.template.feature.movies
 
 import android.icu.text.NumberFormat
-import android.template.core.data.GenreModel
 import android.template.core.ui.MyApplicationTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,11 +21,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,11 +56,11 @@ fun MoviesScreen(
     modifier: Modifier = Modifier,
     viewModel: MoviesViewModel = hiltViewModel()
 ) {
-    val movies = viewModel.moviesFlow(GenreModel(-1, "All")).collectAsLazyPagingItems()
+    val movies = viewModel.moviesFlow.collectAsLazyPagingItems()
     when (movies.loadState.refresh) {
         is LoadState.Error -> {
             ErrorState(
-                errorMessage = "Connection error. Please fix your connection and try again.",
+                errorMessage = stringResource(R.string.movies_screen_error_message_connection),
                 onRetry = { movies.retry() }
             )
         }
@@ -73,12 +75,14 @@ fun MoviesScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MoviesGrid(
     modifier: Modifier = Modifier,
     movies: LazyPagingItems<MovieUiModel>
 ) {
     Scaffold(
+        topBar = { TopBar() },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -87,7 +91,7 @@ internal fun MoviesGrid(
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = stringResource(R.string.movies_screen_filter_button_caption)
+                    contentDescription = stringResource(R.string.movies_screen_button_caption_filter)
                 )
             }
         }
@@ -144,17 +148,17 @@ internal fun MovieCard(
             )
 
             Text(
-                text = "Rating: ${movie.rating}",
+                text = stringResource(R.string.movies_screen_text_rating, movie.rating),
                 style = MaterialTheme.typography.bodySmall
             )
 
             Text(
-                text = "Revenue: ${formatCurrency(movie.revenue)}",
+                text = stringResource(R.string.movies_screen_text_revenue, formatCurrency(movie.revenue)),
                 style = MaterialTheme.typography.bodySmall
             )
 
             Text(
-                text = "Budget: ${formatCurrency(movie.budget)}",
+                text = stringResource(R.string.movies_screen_text_budget, formatCurrency(movie.budget)),
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -163,11 +167,17 @@ internal fun MovieCard(
 
 @Composable
 internal fun LoadingState() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator()
+    Scaffold(
+        topBar = { TopBar() }
+    ) { paddingValues ->
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -176,21 +186,38 @@ internal fun ErrorState(
     errorMessage: String,
     onRetry: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = errorMessage,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = onRetry) {
-            Text(text = "Retry")
+    Scaffold(
+        topBar = { TopBar() }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onRetry) {
+                Text(text = stringResource(R.string.movies_screen_button_caption_retry))
+            }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun TopBar() {
+    TopAppBar(
+        title = {
+            Text(stringResource(R.string.movies_screen_title))
+        }
+    )
 }
 
 private fun formatCurrency(
