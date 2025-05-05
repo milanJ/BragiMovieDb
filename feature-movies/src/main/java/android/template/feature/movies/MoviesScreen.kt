@@ -1,6 +1,8 @@
 package android.template.feature.movies
 
+import android.annotation.SuppressLint
 import android.icu.text.NumberFormat
+import android.template.core.data.GenreModel
 import android.template.core.ui.MyApplicationTheme
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +32,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -52,11 +57,22 @@ import java.util.Locale
 /**
  * This screen displays a grid of movies. And is the main screen of the app.
  */
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: MoviesViewModel = hiltViewModel()
 ) {
+    val selectedGenre = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow<GenreModel?>(SELECTED_GENRE_MODEL_KEY, null)
+        ?.collectAsState()
+
+    LaunchedEffect(selectedGenre) {
+        viewModel.filterByGenre(selectedGenre?.value)
+    }
+
     val movies = viewModel.moviesFlow.collectAsLazyPagingItems()
     when (movies.loadState.refresh) {
         is LoadState.Error -> {
@@ -71,7 +87,13 @@ fun MoviesScreen(
         }
 
         else -> {
-            MoviesGrid(modifier, movies)
+            MoviesGrid(
+                modifier,
+                movies,
+                onFiltersClicked = {
+                    navController.navigate(route = "filters?genreId=${selectedGenre?.value?.id ?: -1L}")
+                }
+            )
         }
     }
 }
@@ -80,15 +102,14 @@ fun MoviesScreen(
 @Composable
 internal fun MoviesGrid(
     modifier: Modifier = Modifier,
-    movies: LazyPagingItems<MovieUiModel>
+    movies: LazyPagingItems<MovieUiModel>,
+    onFiltersClicked: () -> Unit
 ) {
     Scaffold(
         topBar = { TopBar() },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    // TODO: Open filter screen
-                }
+                onClick = onFiltersClicked
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
@@ -102,9 +123,9 @@ internal fun MoviesGrid(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(0.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp),
-            horizontalArrangement = Arrangement.spacedBy(0.dp)
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(movies.itemCount) { index ->
                 val movie = movies[index]
@@ -123,7 +144,7 @@ internal fun MovieCard(
 ) {
     Card(
         modifier = modifier
-            .aspectRatio(0.7f),
+            .aspectRatio(0.8f),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -235,7 +256,7 @@ private fun formatRating(
 private fun formatCurrency(
     value: Int
 ): String {
-    if(value > 1_000_000) {
+    if (value > 1_000_000) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(value / 1_000_000) + "M"
     }
 
@@ -292,7 +313,8 @@ private fun MoviesGridPreview() {
 
     MyApplicationTheme {
         MoviesGrid(
-            movies = movies
+            movies = movies,
+            onFiltersClicked = { }
         )
     }
 }
@@ -302,7 +324,7 @@ private fun MoviesGridPreview() {
 private fun ErrorStatePreview() {
     MyApplicationTheme {
         ErrorState(
-            errorMessage = "Connection error. Please fix your connection and try again.",
+            errorMessage = stringResource(R.string.movies_screen_error_message_connection),
             onRetry = { }
         )
     }
@@ -315,3 +337,5 @@ private fun LoadingStatePreview() {
         LoadingState()
     }
 }
+
+private const val SELECTED_GENRE_MODEL_KEY = "selected_genre_model"

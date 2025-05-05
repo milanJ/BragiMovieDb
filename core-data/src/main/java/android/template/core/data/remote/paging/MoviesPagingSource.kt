@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
  * A [PagingSource] that loads movies from a remote data source.
  */
 class MoviesPagingSource(
-    private val genreName: String?,
+    private val genreId: Int,
     private val remoteDataSource: MoviesRemoteDataSource,
     private val configurationRepository: ConfigurationRepository,
     private val coroutineDispatcher: CoroutineDispatcher
@@ -51,8 +51,12 @@ class MoviesPagingSource(
     private suspend fun loadPage(
         page: Int
     ): List<MovieModel> {
-        Log.d(TAG, "loadPage() :: page = $page, genre = $genreName")
-        val movies = remoteDataSource.getMovies(page, genreName).results
+        Log.d(TAG, "loadPage() :: page = $page, genreId = $genreId")
+
+        // -1 ID is a special case for all movie genres. It is not defined in the TMDB API, instead TMDB API expects a null value.
+        val genreIdsString: String? = if (genreId == -1) null else genreId.toString()
+
+        val movies = remoteDataSource.getMovies(page, genreIdsString).results
         return mergeMovieDetails(movies)
     }
 

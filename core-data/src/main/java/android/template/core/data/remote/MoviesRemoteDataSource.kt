@@ -7,7 +7,7 @@ interface MoviesRemoteDataSource {
 
     suspend fun getMovies(
         page: Int,
-        genre: String? = null
+        genreIds: String? = null
     ): GetMoviesResponse
 
     suspend fun getMovieDetails(
