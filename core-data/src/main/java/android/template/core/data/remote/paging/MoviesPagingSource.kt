@@ -1,9 +1,10 @@
 package android.template.core.data.remote.paging
 
-import android.template.core.data.BuildConfig
+import android.template.core.data.ConfigurationRepository
 import android.template.core.data.MovieModel
 import android.template.core.data.remote.GetMoviesResponse
 import android.template.core.data.remote.MoviesRemoteDataSource
+import android.template.core.data.util.Result
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -19,6 +20,7 @@ import kotlinx.coroutines.withContext
 class MoviesPagingSource(
     private val genreName: String?,
     private val remoteDataSource: MoviesRemoteDataSource,
+    private val configurationRepository: ConfigurationRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : PagingSource<Int, MovieModel>() {
 
@@ -61,11 +63,17 @@ class MoviesPagingSource(
         movies: List<GetMoviesResponse.Movie>
     ): List<MovieModel> = coroutineScope {
         Log.d(TAG, "mergeMovieDetails() :: For ${movies.size} movies")
+        val imageBaseUrlResponse = configurationRepository.getImageBaseUrl()
+        if (imageBaseUrlResponse is Result.Error) {
+            throw Exception("Couldn't fetch image base url.", imageBaseUrlResponse.exception)
+        }
+        val imageBaseUrl = (imageBaseUrlResponse as Result.Success).data
+
         val movieModels = movies.map { item ->
             async {
                 Log.d(TAG, "mergeMovieDetails() :: Get details for '${item.title}'")
                 val details = remoteDataSource.getMovieDetails(item.id)
-                item.toMovieModel(details.budget, details.revenue)
+                item.toMovieModel(details.budget, details.revenue, imageBaseUrl)
             }
         }
             .awaitAll()
@@ -76,10 +84,11 @@ class MoviesPagingSource(
 
 private fun GetMoviesResponse.Movie.toMovieModel(
     budget: Int,
-    revenue: Int
+    revenue: Int,
+    imageBaseUrl: String
 ): MovieModel = MovieModel(
     id = this.id,
-    image = "${BuildConfig.TMDB_BASE_URL}${this.posterPath}",
+    image = "$imageBaseUrl${this.posterPath}",
     title = this.title,
     rating = this.voteAverage,
     revenue = budget,

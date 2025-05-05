@@ -18,12 +18,16 @@ package android.template.core.data.di
 
 import android.content.Context
 import android.template.core.data.BuildConfig
+import android.template.core.data.ConfigurationRepository
+import android.template.core.data.DefaultConfigurationRepository
 import android.template.core.data.DefaultGenresRepository
 import android.template.core.data.DefaultMoviesRepository
 import android.template.core.data.GenresRepository
 import android.template.core.data.MoviesRepository
 import android.template.core.data.remote.ApiService
 import android.template.core.data.remote.AuthorizationInterceptor
+import android.template.core.data.remote.ConfigurationRemoteDataSource
+import android.template.core.data.remote.DefaultConfigurationRemoteDataSource
 import android.template.core.data.remote.DefaultGenresRemoteDataSource
 import android.template.core.data.remote.DefaultMoviesRemoteDataSource
 import android.template.core.data.remote.GenresRemoteDataSource
@@ -49,6 +53,12 @@ import javax.inject.Singleton
 @Module(includes = [DataModuleBinds::class])
 @InstallIn(SingletonComponent::class)
 object DataModule {
+
+    @Singleton
+    @Provides
+    fun provideConfigurationRemoteDataSource(
+        apiService: ApiService,
+    ): ConfigurationRemoteDataSource = DefaultConfigurationRemoteDataSource(apiService)
 
     @Singleton
     @Provides
@@ -110,6 +120,12 @@ object DataModule {
 @Module
 @DisableInstallInCheck
 abstract class DataModuleBinds {
+
+    @Singleton
+    @Binds
+    abstract fun bindsConfigurationRepository(
+        configurationRepository: DefaultConfigurationRepository
+    ): ConfigurationRepository
 
     @Singleton
     @Binds

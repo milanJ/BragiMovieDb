@@ -10,10 +10,11 @@ import javax.inject.Inject
  */
 class DefaultMoviesRepository @Inject constructor(
     private val remoteDataSource: MoviesRemoteDataSource,
+    private val configurationRepository: ConfigurationRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : MoviesRepository {
 
     override fun getMoviesPagingSource(
         genreName: String?,
-    ): MoviesPagingSource = MoviesPagingSource(genreName, remoteDataSource, coroutineDispatcher)
+    ): MoviesPagingSource = MoviesPagingSource(genreName, remoteDataSource, configurationRepository, coroutineDispatcher)
 }
