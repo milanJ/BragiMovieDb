@@ -54,14 +54,13 @@ android {
 
 dependencies {
     // Arch Components
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
     implementation(libs.kotlinx.coroutines.android)
-
-    // AndroidX:
-    implementation(libs.androidx.paging)
-    implementation(libs.androidx.paging.compose)
 
     // Network:
     implementation(libs.gson)
