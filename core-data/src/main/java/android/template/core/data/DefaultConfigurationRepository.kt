@@ -3,7 +3,6 @@ package android.template.core.data
 import android.template.core.data.remote.ConfigurationRemoteDataSource
 import android.template.core.data.remote.GetConfigurationResponse
 import android.template.core.data.util.Result
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,8 +18,6 @@ class DefaultConfigurationRepository @Inject constructor(
     private var cachedConfiguration: GetConfigurationResponse? = null
 
     override suspend fun getImageBaseUrl(): Result<String> {
-        Log.d(TAG, "getImageBaseUrl()")
-
         return try {
             val configuration = getConfiguration()
             val selectedPosterSize = configuration.imagesConfiguration.posterSizes[configuration.imagesConfiguration.posterSizes.size / 2 + 1]
@@ -35,7 +32,6 @@ class DefaultConfigurationRepository @Inject constructor(
             return@withContext cachedConfiguration!!
         }
 
-        Log.d(TAG, "getConfiguration()")
         cachedConfiguration = remoteDataSource.getConfiguration()
         return@withContext cachedConfiguration!!
     }
