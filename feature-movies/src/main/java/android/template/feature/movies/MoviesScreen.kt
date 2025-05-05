@@ -2,6 +2,7 @@ package android.template.feature.movies
 
 import android.icu.text.NumberFormat
 import android.template.core.ui.MyApplicationTheme
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -101,9 +102,9 @@ internal fun MoviesGrid(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(0.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp),
+            horizontalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             items(movies.itemCount) { index ->
                 val movie = movies[index]
@@ -122,45 +123,52 @@ internal fun MovieCard(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(0.95f),
+            .aspectRatio(0.7f),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(0.dp)) {
             AsyncImage(
                 model = movie.imageURL,
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .height(120.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 8.dp,
+                            topEnd = 8.dp,
+                            bottomEnd = 0.dp,
+                            bottomStart = 0.dp
+                        )
+                    )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text(
+                    modifier = Modifier.basicMarquee(),
+                    text = movie.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Text(
-                text = movie.title,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+                Text(
+                    text = stringResource(R.string.movies_screen_text_rating, formatRating(movie.rating)),
+                    style = MaterialTheme.typography.bodySmall
+                )
 
-            Text(
-                text = stringResource(R.string.movies_screen_text_rating, movie.rating),
-                style = MaterialTheme.typography.bodySmall
-            )
+                Text(
+                    text = stringResource(R.string.movies_screen_text_revenue, formatCurrency(movie.revenue)),
+                    style = MaterialTheme.typography.bodySmall
+                )
 
-            Text(
-                text = stringResource(R.string.movies_screen_text_revenue, formatCurrency(movie.revenue)),
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Text(
-                text = stringResource(R.string.movies_screen_text_budget, formatCurrency(movie.budget)),
-                style = MaterialTheme.typography.bodySmall
-            )
+                Text(
+                    text = stringResource(R.string.movies_screen_text_budget, formatCurrency(movie.budget)),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
@@ -220,9 +228,19 @@ internal fun TopBar() {
     )
 }
 
+private fun formatRating(
+    rating: Float
+): String = "%.1f".format(rating)
+
 private fun formatCurrency(
     value: Int
-): String = NumberFormat.getCurrencyInstance(Locale.US).format(value)
+): String {
+    if(value > 1_000_000) {
+        return NumberFormat.getCurrencyInstance(Locale.US).format(value / 1_000_000) + "M"
+    }
+
+    return NumberFormat.getCurrencyInstance(Locale.US).format(value)
+}
 
 // Previews:
 
