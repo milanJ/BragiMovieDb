@@ -78,7 +78,7 @@ android {
 
 dependencies {
     implementation(project(":core-ui"))
-    implementation(project(":feature-mymodel"))
+    implementation(project(":feature-movies"))
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)

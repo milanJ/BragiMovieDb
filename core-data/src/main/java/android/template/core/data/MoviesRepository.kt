@@ -7,7 +7,7 @@ import android.template.core.data.remote.paging.MoviesPagingSource
  */
 interface MoviesRepository {
 
-    suspend fun getMoviesPagingSource(
-        genre: GenreModel,
-    ) : MoviesPagingSource
+    fun getMoviesPagingSource(
+        genreName: String?
+    ): MoviesPagingSource
 }

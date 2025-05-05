@@ -1,6 +1,8 @@
 package android.template.core.data.remote
 
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Exposes the TMDB API endpoints.
@@ -27,6 +29,11 @@ interface ApiService {
     suspend fun getGenres(
         @Query("language") language: String = "en",
     ): GetGenresResponse
+
+    // ==================================== Configuration: =========================================
+
+    @GET("configuration")
+    suspend fun getConfiguration(): GetConfigurationResponse
 
     // =============================================================================================
 }

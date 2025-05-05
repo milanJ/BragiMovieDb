@@ -8,8 +8,8 @@ import javax.inject.Inject
  */
 class FakeMoviesRepository @Inject constructor() : MoviesRepository {
 
-    override suspend fun getMoviesPagingSource(
-        genre: GenreModel
+    override fun getMoviesPagingSource(
+        genreName: String?
     ): MoviesPagingSource {
         TODO("Not yet implemented")
     }

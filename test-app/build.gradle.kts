@@ -54,7 +54,7 @@ dependencies {
     implementation(project(":app"))
     implementation(project(":core-data"))
     implementation(project(":core-testing"))
-    implementation(project(":feature-mymodel"))
+    implementation(project(":feature-movies"))
 
     // Testing
     implementation(libs.androidx.test.core)
