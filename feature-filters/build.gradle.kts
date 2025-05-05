@@ -65,6 +65,7 @@ dependencies {
 
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.navigation.testing)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Hilt Dependency Injection
