@@ -2,10 +2,11 @@ package android.template.core.data
 
 import android.template.core.data.remote.GenresRemoteDataSource
 import android.template.core.data.remote.GetGenresResponse
-import android.template.core.data.util.Result
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 /**
@@ -16,15 +17,18 @@ class DefaultGenresRepository @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : GenresRepository {
 
-    override suspend fun getGenres(): Result<List<GenreModel>> = withContext(coroutineDispatcher) {
+    override fun getGenres(): Flow<List<GenreModel>> = flow {
         Log.d(TAG, "getGenres()")
-        return@withContext try {
-            val genres = remoteDataSource.getGenres().results
-            Result.Success(genres.toGenreModelsList())
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        val results = remoteDataSource.getGenres()
+            .results
+            .toGenreModelsList()
+            .toMutableList()
+            .apply {
+                add(0, GenreModel(id = -1, name = "All"))
+            }
+        emit(results)
     }
+        .flowOn(coroutineDispatcher)
 }
 
 private fun List<GetGenresResponse.Genre>.toGenreModelsList(): List<GenreModel> = map {

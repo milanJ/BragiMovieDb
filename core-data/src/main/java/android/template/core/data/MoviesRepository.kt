@@ -8,6 +8,6 @@ import android.template.core.data.remote.paging.MoviesPagingSource
 interface MoviesRepository {
 
     fun getMoviesPagingSource(
-        genreName: String?
+        genreId: Int
     ): MoviesPagingSource
 }

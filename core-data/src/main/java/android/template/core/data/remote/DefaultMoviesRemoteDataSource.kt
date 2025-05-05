@@ -9,8 +9,8 @@ open class DefaultMoviesRemoteDataSource internal constructor(
 
     override suspend fun getMovies(
         page: Int,
-        genre: String?
-    ): GetMoviesResponse = apiService.getMovies(page, genre)
+        genreIds: String?
+    ): GetMoviesResponse = apiService.getMovies(page, genreIds)
 
     override suspend fun getMovieDetails(
         id: Long

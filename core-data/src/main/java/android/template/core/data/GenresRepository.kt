@@ -1,10 +1,10 @@
 package android.template.core.data
 
-import android.template.core.data.util.Result
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface to the movie genres data.
  */
 interface GenresRepository {
-    suspend fun getGenres(): Result<List<GenreModel>>
+    fun getGenres(): Flow<List<GenreModel>>
 }

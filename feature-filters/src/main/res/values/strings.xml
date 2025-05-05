@@ -1,0 +1,5 @@
+<resources>
+    <string name="filters_screen_title">Filter by genre</string>
+
+    <string name="filters_screen_error_message_connection">Connection error. Please fix your connection and try again.</string>
+</resources>
